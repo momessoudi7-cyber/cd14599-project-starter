@@ -6,6 +6,7 @@ app = Flask(__name__, static_folder='../frontend')
 in_memory_storage = InMemoryStorage()
 order_tracker = OrderTracker(in_memory_storage)
 
+
 @app.route('/')
 def serve_index():
     """
@@ -15,6 +16,7 @@ def serve_index():
         Response: The index.html file.
     """
     return send_from_directory(app.static_folder, 'index.html')
+
 
 @app.route('/<path:filename>')
 def serve_static(filename):
@@ -28,6 +30,7 @@ def serve_static(filename):
         Response: The requested static file.
     """
     return send_from_directory(app.static_folder, filename)
+
 
 @app.route('/api/orders', methods=['POST'])
 def add_order_api():
@@ -57,6 +60,7 @@ def add_order_api():
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
 
+
 @app.route('/api/orders/<string:order_id>', methods=['GET'])
 def get_order_api(order_id):
     """
@@ -72,6 +76,7 @@ def get_order_api(order_id):
     if order is None:
         return jsonify({"error": "Order not found"}), 404
     return jsonify(order), 200
+
 
 @app.route('/api/orders/<string:order_id>/status', methods=['PUT'])
 def update_order_status_api(order_id):
@@ -96,6 +101,7 @@ def update_order_status_api(order_id):
     except ValueError as e:
         return jsonify({"error": str(e)}), 404
 
+
 @app.route('/api/orders', methods=['GET'])
 def list_orders_api():
     """
@@ -114,6 +120,7 @@ def list_orders_api():
         orders = order_tracker.list_all_orders()
     return jsonify(orders), 200
 
+
 @app.route('/api/orders/<string:order_id>', methods=['DELETE'])
 def delete_order_api(order_id):
     """
@@ -130,6 +137,7 @@ def delete_order_api(order_id):
         return '', 204
     except ValueError as e:
         return jsonify({"error": str(e)}), 404
+
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", debug=True)

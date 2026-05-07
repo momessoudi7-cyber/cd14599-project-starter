@@ -145,15 +145,23 @@ def test_delete_order_success(order_tracker, mock_storage):
     """Test successful deletion of an order."""
     mock_order = {'order_id': 'order1', 'status': 'pending'}
     mock_storage.get_order.return_value = mock_order
-    
+
     order_tracker.delete_order('order1')
-    
+
     mock_storage.delete_order.assert_called_once_with('order1')
 
 def test_delete_order_not_found(order_tracker, mock_storage):
     """Test ValueError when trying to delete non-existent order."""
     mock_storage.get_order.return_value = None
-    
+
     with pytest.raises(ValueError, match="Order with ID nonexistent not found"):
         order_tracker.delete_order('nonexistent')
 #
+
+def test_get_order_not_found(order_tracker):
+    """Prüft, ob None zurückgegeben wird, wenn die ID nicht existiert"""
+    assert order_tracker.get_order_by_id("99999") is None
+
+def test_get_order_empty_id(order_tracker):
+    """Prüft das Verhalten bei einer leeren ID (sollte None zurückgeben)"""
+    assert order_tracker.get_order_by_id("") is None
