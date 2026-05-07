@@ -51,3 +51,15 @@ def test_list_orders_by_status_api_matching(client):
     assert response.status_code == 200
     assert len(response.json) == 1
     assert response.json[0]['order_id'] == "S001"
+
+def test_delete_order_api_success(client):
+    client.post('/api/orders', json={"order_id": "DEL001", "item_name": "Test Item", "quantity": 1, "customer_id": "C1"})
+    response = client.delete('/api/orders/DEL001')
+    assert response.status_code == 204
+    # Verify it's deleted
+    response = client.get('/api/orders/DEL001')
+    assert response.status_code == 404
+
+def test_delete_order_api_not_found(client):
+    response = client.delete('/api/orders/NONEXISTENT')
+    assert response.status_code == 404
